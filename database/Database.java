@@ -24,7 +24,7 @@ public class Database{
         final DataTypes dataType
     ) throws IllegalArgumentException
     {
-        Map<String, Map<Integer, Object>> datasets = new HashMap<>(Map.of(
+        Map<String, Map<Integer, ?>> datasets = new HashMap<>(Map.of(
             "ACCOUNT", accountDatabase,
             "USER", userDatabase,
             "COMPANY", companyDatabase,
@@ -33,12 +33,14 @@ public class Database{
         ));
 
         final String dataTypeString = dataType.toString();
-        Map<Integer, Object> data = datasets.get(dataTypeString);
+
+        // ? type just means "unknown". Object won't work here
+        Map<Integer, ?> data = datasets.get(dataTypeString);
         if (data == null){
             throw new IllegalArgumentException(dataTypeString + " is not a valid datatype.");
         }
 
-        Object returnedData = data.containsKey(id);
+        Object returnedData = data.get(id);
         if (returnedData == null){
             throw new IllegalArgumentException(dataTypeString + " of id '"+id+"' does not exist." );
         }
@@ -46,19 +48,19 @@ public class Database{
         return returnedData;
     }
 
-    public boolean addObject(
+    public boolean addOrUpdateObject(
         final DataTypes dt,
         final int objectId,
         final Object data
     ){  
-
+        
         if (data == null){
             return false;
         }
-      
+
         String dataTypeString = dt.toString();
             
-        Map<String, Map<Integer, Object>> datasets = new HashMap<>(Map.of(
+        Map<String, Map<Integer, ?>> datasets = new HashMap<>(Map.of(
             "ACCOUNT", accountDatabase,
             "USER", userDatabase,
             "COMPANY", companyDatabase,
@@ -66,35 +68,36 @@ public class Database{
             "IPO", IPODatabase
         ));
 
-        Map<Integer, Object> dataMap = datasets.get(dataTypeString);
-        if (dataMap == null){
+        Map<Integer, ?> dm = datasets.get(dataTypeString);
+        if (dm == null){
             throw new IllegalArgumentException(dataTypeString + " is not a valid datatype.");
         }
-        
+
+        Map<Integer, Object> dataMap = (Map<Integer, Object>) dm; 
         dataMap.put(objectId, data);
-        return true;  
+        return true; 
     }
-    
+
+
     public Object getData(int id, DataTypes dt){
         Object data = getObject(id, dt);
         return data;
     }
 
-    public boolean updateUser(final int id, final User userData){
-        try{
-            if (userData == null || !userDatabase.containsKey(id)){
-                throw new IllegalArgumentException("Invalid inputs when updating user data.");
-            }
+    // public boolean updateUser(final int id, final User userData){
+    //     try{
+    //         if (userData == null || !userDatabase.containsKey(id)){
+    //             throw new IllegalArgumentException("Invalid inputs when updating user data.");
+    //         }
 
-            
-            userDatabase.put(id, userData);
-            return true;
-        }
-        catch (IllegalArgumentException ex){
-            System.err.println("An error occurred when updating user: " + ex.toString());
-            return false;
-        }
-    }
+    //         userDatabase.put(id, userData);
+    //         return true;
+    //     }
+    //     catch (IllegalArgumentException ex){
+    //         System.err.println("An error occurred when updating user: " + ex.toString());
+    //         return false;
+    //     }
+    // }
 
 
     /*
@@ -106,8 +109,6 @@ public class Database{
             "5942": <user_object_5942>
         }     
     */
-
-    
     public Map<Integer, Account> getAllAccounts(){ return accountDatabase; }
     public Map<Integer, User> getAllUsers(){ return userDatabase; }
     public Map<Integer, Bank> getAllBanks(){ return externalBankDatabase; }

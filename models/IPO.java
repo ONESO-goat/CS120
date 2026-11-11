@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 
 
-class IPO{
+public class IPO{
     private final int id;
 
     private BigDecimal pricePerShare;
