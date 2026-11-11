@@ -1,3 +1,5 @@
+package helpers;
+
 public enum DataTypes {
     ACCOUNT,
     USER,

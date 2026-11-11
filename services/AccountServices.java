@@ -5,19 +5,9 @@ import java.util.Map;
 import models.Account;
 import models.ExternalAccount;
 
-public class AccountServices<T> {
+public class AccountServices {
     
-    /*
-        returns map with keys being ID, and accounts being values.
-        ex; {
-            "1234": <account_object_1234>
-
-        }    
-    */
-    public Map<String, Account> getAllAccounts(){
-
-        return new HashMap<>();
-    }
+    
 
     /*
         id:
