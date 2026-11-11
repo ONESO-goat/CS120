@@ -13,6 +13,7 @@ public class Database {
         Each hashmap holds IDs as keys, then the object for values. This is for quick calls
     */
     Map<Integer, Account> accountDatabase = new HashMap<>();
+    Map<Integer, Bank> externalBankDatabase = new HashMap<>();
     Map<Integer, User> userDatabase = new HashMap<>();
     Map<Integer, Company> companyDatabase = new HashMap<>();
     Map<Integer, IPO> IPODatabase = new HashMap<>();
@@ -22,44 +23,49 @@ public class Database {
 
 
     public Database(){}
-    private void idExists(
+
+    private Object getObject(
         final int id, 
-        final DataType dataType
-    ) : AccountNotFoundException
+        final DataTypes dataType
+    ) throws IllegalArgumentException
     {
-        Map<String, Map> datasets = new HashMap<>(
-            ("")
-        );
-        if (!accountDatabase.containsKey(id)){
-            throw new AccountNotFoundException(dataType.toString() + " of id '"+id+"' does not exist." );
+        Map<String, Map<Integer, ?>> datasets = new HashMap<>(Map.of(
+            "ACCOUNT", accountDatabase,
+            "USER", userDatabase,
+            "COMPANY", companyDatabase,
+            "BANK", externalBankDatabase,
+            "IPO", IPODatabase
+        ));
+
+        Map<Integer, Object> d = datasets.get(dataType.toString());
+        if (d == null){
+            throw new IllegalArgumentException(dataType.toString() + " is not a valid datatype.");
         }
-    }
-    public Account getAccount(final int id){
-        idExists(id, DataType.Account);
-        return accountDatabase.get(id);
-    }
 
-    public User getUser(final String id){
+        Object returnedData = d.containsKey(id);
+        if (returnedData == null){
+            throw new IllegalArgumentException(dataType.toString() + " of id '"+id+"' does not exist." );
+        }
+
+        return returnedData;
+    }
     
-        idExists(id, DataType.User);
-        return userDatabase.get(id);
+    public Object getData(int id, DataTypes dt){
+        Object data = getObject(id, dt);
+        return data;
     }
 
-    public boolean updateUser(final String id, final User userData){
+    public boolean updateUser(final int id, final User userData){
         try{
-            if (userData == null || id.isEmpty()){
+            if (userData == null || !userDatabase.containsKey(id)){
                 throw new IllegalArgumentException("Invalid inputs when updating user data.");
             }
 
-            if (!userDatabase.containsKey(id)){
-                // TODO: Further validation needed, like making sure format is legal.
-                userDatabase.put(id, userData);
-                return true;
-            }
+            
             userDatabase.put(id, userData);
             return true;
         }
-        catch (Exception ex){
+        catch (IllegalArgumentException ex){
             System.err.println("An error occurred when updating user: " + ex.toString());
             return false;
         }

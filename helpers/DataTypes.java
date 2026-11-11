@@ -2,5 +2,6 @@ public enum DataTypes {
     ACCOUNT,
     USER,
     COMPANY,
-    IPO
+    IPO,
+    BANK
 }
