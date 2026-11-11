@@ -1,6 +1,7 @@
 package database;
 
 import helpers.DataTypes;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import models.*;
@@ -15,6 +16,8 @@ public class Database{
     private final Map<Integer, User> userDatabase = new HashMap<>();
     private final Map<Integer, Company> companyDatabase = new HashMap<>();
     private final Map<Integer, IPO> IPODatabase = new HashMap<>();
+
+    private BigDecimal funding = new BigDecimal(1000);
 
 
     public Database(){}
@@ -83,6 +86,35 @@ public class Database{
         Object data = getObject(id, dt);
         return data;
     }
+
+    public void disputeSpecialWelcome(User user){
+        final BigDecimal amount = new BigDecimal("5");
+        if (funding.compareTo(amount) < 0){
+            throw new IllegalArgumentException("No more funds in the database");
+        }
+
+        try{
+            Bank tempBank = new Bank(
+                0, 
+                "Julius_market", 
+                1111, 
+                amount
+            );
+
+            Account userAccount = user.getAccount();
+            userAccount.setBank(tempBank);
+            userAccount.deposit(amount);
+
+            userAccount.setBank(null);
+
+            
+        } catch (Exception ex){
+            System.err.println("Error occurred during disputeSpecialWelcome: \n\t" + ex.toString());
+        }
+
+    }
+
+
 
     // public boolean updateUser(final int id, final User userData){
     //     try{

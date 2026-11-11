@@ -15,15 +15,21 @@ public class Account{
 
     private final int ownerId;
 
+
     public Account(
         final int accountId,
-        final BigDecimal accountBalance,
-        final int accountOwnerId
+        final int accountOwnerId,
+        final BigDecimal startingAmount
     ) 
     {  
+        if (startingAmount.compareTo(new BigDecimal("5")) > 0){
+            throw new IllegalArgumentException("Invalid starting amount for new account.");
+        }
+
         this.id = accountId;
         this.ownerId = accountOwnerId;
-        this.balance = accountBalance;
+        this.balance = startingAmount;
+
     }
 
 
@@ -35,6 +41,8 @@ public class Account{
 
     // SETS
     public void setBank(Bank newBank){ this.externalBank = newBank; }
+    
+
 
     // Methods
     public boolean withdraw(final BigDecimal removedAmount){

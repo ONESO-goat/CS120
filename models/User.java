@@ -1,5 +1,6 @@
 package models;
 import database.Database;
+import helpers.DataTypes;
 import java.time.LocalDate;
 
 
@@ -8,7 +9,7 @@ public class User{
     private String username;
     private int nameChangesCount = 0;
     private String hashedPassword;
-    private int accountId = -1;
+    private Account account;
 
     private final LocalDate addedAt = LocalDate.now();;
 
@@ -29,7 +30,7 @@ public class User{
     // GETS
     public int getId(){return this.id;}
     public String getUsername (){ return this.username; }
-    public int getAccountId(){return this.accountId;}
+    public Account getAccount(){return this.account;}
     public LocalDate getCreationDate(){return this.addedAt;}
 
 
@@ -69,7 +70,7 @@ public class User{
         }
         this.username = newName;
         
-        boolean success = db.updateUser(this.getId(), this);
+        boolean success = db.addOrUpdateObject(DataTypes.USER, this.id, this);
         if (!success){
             this.username = oldName;
             return false;

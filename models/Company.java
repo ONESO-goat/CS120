@@ -8,7 +8,7 @@ public class Company {
     private final LocalDate dateAdded = LocalDate.now();
     private final LocalDate dayOfIPORelease = null;
 
-    private boolean companyHasIpo = false;
+    private IPO companyIpo = null;
 
     public Company(
         int companyId,
@@ -23,9 +23,9 @@ public class Company {
     public LocalDate getAddedDate(){ return this.dateAdded; }
     public LocalDate getDateOfIPORelease(){ return this.dayOfIPORelease; }
 
-    public boolean hasIpo(){ return this.companyHasIpo; }
+    public boolean hasIpo(){ return this.companyIpo != null; }
 
-    public void setHasIpo(){ this.companyHasIpo = true; }   
+    public void setHasIpo(IPO newIpo){ this.companyIpo = newIpo; }   
 
 
 }
