@@ -17,6 +17,11 @@ public class Database{
     private final Map<Integer, Company> companyDatabase = new HashMap<>();
     private final Map<Integer, IPO> IPODatabase = new HashMap<>();
 
+    // This will be different. This will hold user id as the key. Then, have the IPO id.
+    // so: theUsersShares = shares.get(the_users_id); -> theUsersShares.get(the_ipo_id); 
+    private final Map<Integer,  Map<Integer, Shares>> sharesDatabase = new HashMap<>();
+
+
     private BigDecimal funding = new BigDecimal(1000);
 
 
@@ -37,9 +42,10 @@ public class Database{
 
         final String dataTypeString = dataType.toString();
 
-        // ? type just means "unknown". Object won't work here
+        // ? type just means "unknown". "Object" won't work here because of my unique classes (for some reason).
+        //  Basic Type (T) doesn't work here either
         Map<Integer, ?> data = datasets.get(dataTypeString);
-        if (data == null){
+        if (data == null){    
             throw new IllegalArgumentException(dataTypeString + " is not a valid datatype.");
         }
 
@@ -62,7 +68,7 @@ public class Database{
         }
 
         String dataTypeString = dt.toString();
-            
+        
         Map<String, Map<Integer, ?>> datasets = new HashMap<>(Map.of(
             "ACCOUNT", accountDatabase,
             "USER", userDatabase,
@@ -87,6 +93,40 @@ public class Database{
         return data;
     }
 
+    public Shares getUserShares(int userId, IPO ipo){
+        if (userId <= 0 || ipo == null){
+            lazyErr(400, "getUserShares", "invalid input");
+            return null;
+        }
+        Map<Integer, Shares> theUsersShares = sharesDatabase.get(userId);
+        if (theUsersShares == null){
+            lazyErr(400, "getUserShares", "user doesn't have shares from "+ipo.title());
+            return null;
+        }
+
+        int iposId = ipo.getId();
+
+        Shares sharesFromIpo = theUsersShares.get(iposId);
+        return sharesFromIpo;
+    }
+
+    public boolean updateShare(int userId, int ipoId, Shares share){
+        
+        Map<Integer, Shares> theUsersShares = this.sharesDatabase.get(userId);
+        if (theUsersShares == null || !theUsersShares.containsKey(ipoId)){
+            lazyErr(400, "updateShare", "user doesn't own shares for this ipo.");
+        }
+
+        this.sharesDatabase.get(userId).put(ipoId, share);
+        return true;
+    }
+
+    public boolean addShare(int userId, int ipoId, Shares share){
+        Map<Integer, Shares> shareMap = new HashMap<>(Map.of(ipoId, share));
+        this.sharesDatabase.put(userId, shareMap);
+        return true;
+    }
+
     public void disputeSpecialWelcome(User user){
         final BigDecimal amount = new BigDecimal("5");
         if (funding.compareTo(amount) < 0){
@@ -96,7 +136,7 @@ public class Database{
         try{
             Bank tempBank = new Bank(
                 0, 
-                "Julius_market", 
+                "the_best_market_of_all_time_from_julius", 
                 1111, 
                 amount
             );
@@ -109,7 +149,7 @@ public class Database{
 
             
         } catch (Exception ex){
-            System.err.println("Error occurred during disputeSpecialWelcome: \n\t" + ex.toString());
+            lazyErr(500, "disputeSpecialWelcome", ex);
         }
 
     }
@@ -145,5 +185,18 @@ public class Database{
     public Map<Integer, User> getAllUsers(){ return userDatabase; }
     public Map<Integer, Bank> getAllBanks(){ return externalBankDatabase; }
     public Map<Integer, Company> getAllCompanies(){ return companyDatabase; }
+    public Map<Integer, Map<Integer, Shares>> getAllShares(){ return sharesDatabase; }
+    
+
+    // methods
+    private void lazyErr(int statusCode, String functionName, Object ex){
+    
+        String e = String.format(
+            "%d: Error occurred during `%s`: %n\t\u2022 %s",
+             statusCode, functionName, ex.toString()
+        );
+        throw new IllegalArgumentException(e);
+        //System.err.println(e);
+    }
 
 }

@@ -8,7 +8,9 @@ public class User{
     private final int id;
     private String username;
     private int nameChangesCount = 0;
-    private String hashedPassword;
+    private String password;
+     // for this project, I am going to use plain string. In production, this should never be the case.
+     
     private Account account;
 
     private final LocalDate addedAt = LocalDate.now();;
@@ -16,13 +18,13 @@ public class User{
     public User( 
         final int userId,
         final String  givenUsername, 
-        final String hashedPass
+        final String givenPassword
     ) 
     {
         this.validateName(username);
         this.id = userId;
         this.username = givenUsername;
-        this.hashedPassword = hashedPass;
+        this.password = givenPassword;
     }
 
 
@@ -33,12 +35,28 @@ public class User{
     public Account getAccount(){return this.account;}
     public LocalDate getCreationDate(){return this.addedAt;}
 
+    // SETS
+    public void setNewPassword(String newPassword){
+        newPassword = newPassword.strip();
+
+        if (newPassword.length() < 8 || newPassword.length() > 120){
+            throw new IllegalArgumentException("400: Password is falls outside the valid length.");
+        }
+
+        if (newPassword.isBlank() || newPassword.isEmpty()){
+            throw new IllegalArgumentException("400: Invalid password");
+        }
+        
+        this.password = newPassword;
+    }
 
 
+
+    // Methods
 
     private void validateName(final String name) throws IllegalArgumentException {
         if (name == null || name.isEmpty()){
-            throw new IllegalArgumentException("Name is invalid");
+            throw new IllegalArgumentException("400: Name is invalid");
         }
 
     }
@@ -48,11 +66,11 @@ public class User{
     */
     public boolean changeName(final String newName, final Database db) throws IllegalArgumentException{
         if (nameChangesCount >= 5){
-            throw new IllegalArgumentException("Cannot change name as max limit was reached.");
+            throw new IllegalArgumentException("400: Cannot change name as max limit was reached.");
         }
 
         if (db == null){
-            throw new IllegalArgumentException("Database not found");
+            throw new IllegalArgumentException("500: Database not found");
         }
         final String oldName = this.username; 
         final String newName_ = newName.toLowerCase().strip();
@@ -66,7 +84,7 @@ public class User{
             || 
             newName_.length() > 100
         ){
-            throw new IllegalArgumentException("Name '"+newName+"' is not valid.");
+            throw new IllegalArgumentException("400: Name '"+newName+"' is not valid.");
         }
         this.username = newName;
         

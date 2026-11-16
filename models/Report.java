@@ -19,11 +19,11 @@ public class Report {
         );
     }
 
-    public boolean saveReportUser(User user, String details) throws IOException{
+    public boolean saveReport(User user, String details) throws IOException{
 
         LocalDate todaysDate = LocalDate.now();
 
-        final String fileName = String.format("%s%d.txt", user.getUsername(), user.getId());
+        final String fileName = String.format("%s%d_report.txt", user.getUsername(), user.getId());
 
         FileOutputStream fileStream = new FileOutputStream(fileName, true);
         PrintWriter writer = new PrintWriter(fileStream);
@@ -36,11 +36,11 @@ public class Report {
         return true;   
     }
 
-    public boolean saveReportCompany(Company company, String details) throws IOException{
-
+    public boolean saveReport(Company company, String details) throws IOException{
+        
         LocalDate todaysDate = LocalDate.now();
 
-        final String fileName = String.format("%s%d.txt", company.getName(), company.getId());
+        final String fileName = String.format("%s%d_report.txt", company.getName(), company.getId());
 
         FileOutputStream fileStream = new FileOutputStream(fileName, true);
         PrintWriter writer = new PrintWriter(fileStream);
