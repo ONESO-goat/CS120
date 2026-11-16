@@ -6,8 +6,18 @@ import java.math.BigDecimal;
 import models.*;
 
 
-public class IpoServices {
+public class IpoAndCompanyServices {
 
+    public Company createCompany(
+        int id,
+        String name
+    ){
+        Company company = new Company(id, name);
+        if (company == null){
+            throw new IllegalArgumentException("Company was not created");
+        }
+        return company;
+    }
     
     public IPO releaseIPO(
         Company holder,
@@ -17,8 +27,10 @@ public class IpoServices {
         long amountOfShares
     ){
         IPO ipo = new IPO(id, ipoTitle, startingPrice, holder, amountOfShares);
+        holder.setIpo(ipo);
         return ipo;
     }
+
 
     public boolean buy(
         int requestUserId,
@@ -79,7 +91,7 @@ public class IpoServices {
         if (ipo.getAmountOfShares() < requestedAmount){
             throw new IllegalArgumentException("400: Invalid amount of shares.");
         }
-        
+
         final BigDecimal ipoPricePerShare = ipo.getPricePerShare();
 
         Shares userShares = db.getUserShares(requestUserId, ipo);

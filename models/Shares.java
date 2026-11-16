@@ -26,7 +26,13 @@ public class Shares {
 
     
     // SETS
-    
+    public int getUserId(){ return this.userId; }
+    public int getId(){ return this.id; }
+    public IPO getIpo(){ return this.ipo; }
+    public long getAmountHeld(){ return this.amountHeld; }
+    public LocalDate getLastUpdate(){ return this.lastUpdate; }
+    public LocalDate getFirstBoughtDate(){ return this.firstPurchasedDate; }
+
     // METHODS
     public void addShares(long amount){
         this.amountHeld += amount;

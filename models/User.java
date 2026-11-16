@@ -21,9 +21,9 @@ public class User{
         final String givenPassword
     ) 
     {
-        this.validateName(username);
+        this.validateName(givenUsername);
         this.id = userId;
-        this.username = givenUsername;
+        this.username = givenUsername.strip();
         this.password = givenPassword;
     }
 
@@ -58,11 +58,10 @@ public class User{
 
     // Methods
 
-    private void validateName(final String name) throws IllegalArgumentException {
-        if (name == null || name.isEmpty()){
+    private void validateName(final String name) throws IllegalArgumentException {   
+        if (name == null || name.isBlank() || name.isEmpty()){
             throw new IllegalArgumentException("400: Name is invalid");
         }
-
     }
 
     /*

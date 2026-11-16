@@ -20,12 +20,13 @@ public class Company {
 
     public String getName(){ return this.name; }
     public int getId(){ return this.id; }
+    public IPO getCompanyIpo(){ return this.companyIpo; }
     public LocalDate getAddedDate(){ return this.dateAdded; }
     public LocalDate getDateOfIPORelease(){ return this.dayOfIPORelease; }
 
-    public boolean hasIpo(){ return this.companyIpo != null; }
+    public boolean hasAnIpo(){ return this.companyIpo != null; }
 
-    public void setHasIpo(IPO newIpo){ this.companyIpo = newIpo; }   
+    public void setIpo(IPO newIpo){ this.companyIpo = newIpo; }   
 
 
 }

@@ -2,7 +2,7 @@ package services;
 
 import models.User;
 
-public class userService {
+public class UserService {
     public User createUser(
         final int id,
         final String username,
