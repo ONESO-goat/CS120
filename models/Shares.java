@@ -8,7 +8,7 @@ public class Shares {
     final private IPO ipo;
 
     private long amountHeld = 0;
-    private LocalDate recentPurchaseDate = LocalDate.now();
+    private LocalDate lastUpdate = LocalDate.now();
 
     final private LocalDate firstPurchasedDate = LocalDate.now();
 
@@ -26,12 +26,15 @@ public class Shares {
 
     
     // SETS
-
-
+    
     // METHODS
     public void addShares(long amount){
         this.amountHeld += amount;
+        this.lastUpdate = LocalDate.now();
     }
 
-
+    public void removeShares(long amount){
+        this.amountHeld -= amount;
+        this.lastUpdate = LocalDate.now();
+    }
 }

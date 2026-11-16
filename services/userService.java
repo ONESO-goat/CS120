@@ -15,7 +15,6 @@ public class userService {
             throw new IllegalArgumentException("400: Invalid user data.");
         }
         User user = new User(id, usernameStrip, passwordStrip); // throws an error if the user info is invalid
-        
         return user;
     }
 }

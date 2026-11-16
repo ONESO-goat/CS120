@@ -36,6 +36,10 @@ public class User{
     public LocalDate getCreationDate(){return this.addedAt;}
 
     // SETS
+    public void setAccount(Account newAccount){
+        this.account = newAccount;
+    }
+
     public void setNewPassword(String newPassword){
         newPassword = newPassword.strip();
 

@@ -35,7 +35,7 @@ public class Account{
 
     // GETS
     public int getId(){return this.id;}
-    public BigDecimal getAmount(){return this.balance;}
+    public BigDecimal getBalance(){return this.balance;}
     public LocalDate getAddedDate(){return this.createdAtDate;}
     public int getOwnerId(){return this.ownerId;}
 
