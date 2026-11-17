@@ -45,30 +45,57 @@ public class Account{
 
 
     // Methods
-    public boolean withdraw(final BigDecimal removedAmount){
-        if (this.externalBank == null || removedAmount.compareTo(BigDecimal.ZERO) < 0) {
-            return false;
-        }
 
-        boolean successful = this.externalBank.deposit(removedAmount);
-         if (!successful){
+    // public boolean sendBalanceToBank(BigDecimal amount){
+    //      if (amount.compareTo(BigDecimal.ZERO) < 0) {
+    //         System.out.println("BANK IS NONE");
+    //         return false;
+    //     }
+
+    //     this.externalBank.deposit(amount);
+    //     withdraw(amount);
+    //     return true;
+    // }
+
+    public boolean withdrawFromBank(final BigDecimal removedAmount){
+        if (externalBank == null || removedAmount.compareTo(BigDecimal.ZERO) < 0) {
+            System.out.println("BANK IS NONE");
             return false;
         }
         
+        this.externalBank.withdraw(removedAmount);
+        deposit(removedAmount);
+
+        return true;
+    }
+
+    public boolean depositIntoBank(final BigDecimal gainedAmount){
+        if (this.externalBank == null || gainedAmount.compareTo(BigDecimal.ZERO) < 0) {
+            return false;
+        }
+
+        withdraw(gainedAmount);
+        this.externalBank.deposit(gainedAmount);
+        
+        return true;
+    }
+
+    public boolean withdraw(final BigDecimal removedAmount){
+        if (removedAmount.compareTo(BigDecimal.ZERO) < 0) {
+            System.out.println("BANK IS NONE");
+            return false;
+        }
+      
         this.balance = this.balance.subtract(removedAmount);
 
         return true;
     }
 
     public boolean deposit(final BigDecimal gainedAmount){
-        if (this.externalBank == null || gainedAmount.compareTo(BigDecimal.ZERO) < 0) {
+        if (gainedAmount.compareTo(BigDecimal.ZERO) < 0) {
             return false;
         }
 
-        boolean successful = externalBank.withdraw(gainedAmount);
-        if (!successful){
-            return false;
-        }
         this.balance = this.balance.add(gainedAmount);
         
         return true;

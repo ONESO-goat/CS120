@@ -22,7 +22,7 @@ public class Database{
     private final Map<Integer,  Map<Integer, Shares>> sharesDatabase = new HashMap<>();
 
 
-    private BigDecimal funding = new BigDecimal(1000);
+    final private BigDecimal funding = new BigDecimal("1000");
 
 
     public Database(){}
@@ -98,9 +98,10 @@ public class Database{
             lazyErr(400, "getUserShares", "invalid input");
             return null;
         }
+
         Map<Integer, Shares> theUsersShares = sharesDatabase.get(userId);
         if (theUsersShares == null){
-            lazyErr(400, "getUserShares", "user doesn't have shares from "+ipo.title());
+            //lazyErr(400, "getUserShares", "user doesn't have shares from "+ipo.title());
             return null;
         }
 

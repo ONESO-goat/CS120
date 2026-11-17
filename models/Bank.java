@@ -42,25 +42,27 @@ public class Bank {
             return false;
         }
 
-        if (this.balance.subtract(removedAmount).compareTo(BigDecimal.ZERO) < 0){
+        BigDecimal newBalance = this.balance.subtract(removedAmount);
+        if (newBalance.compareTo(BigDecimal.ZERO) < 0){
             return false;
         }
 
-        this.balance = this.balance.subtract(removedAmount);
+        this.balance = newBalance;
 
         return true;
     }
 
     public boolean deposit(final BigDecimal gainedAmount){
-        if (gainedAmount.compareTo(BigDecimal.ZERO) < 0) {
+        if (gainedAmount.compareTo(BigDecimal.ZERO) <= 0) { // adding $0 or negative balance
             return false;
         }
 
-        if (this.balance.add(gainedAmount).compareTo(BigDecimal.ZERO) < 0){ // adding negative number
+        BigDecimal newBalance = this.balance.add(gainedAmount);
+        if (newBalance.compareTo(BigDecimal.ZERO) < 0){ 
             return false;
         }
 
-        this.balance = this.balance.add(gainedAmount);
+        this.balance = newBalance;
 
         return true;
     }

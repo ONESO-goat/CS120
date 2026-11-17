@@ -63,7 +63,9 @@ public class IpoAndCompanyServices {
 
         if (userShares == null){
 
-            usersAccount.withdraw(cost);
+            if (!usersAccount.withdraw(cost)){
+                throw new IllegalArgumentException("500: error occurred withdrawing in 'buy'");
+            }
             Shares userShare = new Shares(0, requestUserId, ipo, requestedAmount);
             db.addShare(requestUserId, ipo.getId(), userShare);
             db.addOrUpdateObject(DataTypes.ACCOUNT, usersAccount.getId(), usersAccount);
@@ -92,26 +94,32 @@ public class IpoAndCompanyServices {
             throw new IllegalArgumentException("400: Invalid amount of shares.");
         }
 
+        User user = db.getAllUsers().get(requestUserId);
+
         final BigDecimal ipoPricePerShare = ipo.getPricePerShare();
 
-        Shares userShares = db.getUserShares(requestUserId, ipo);
+        Shares userShares = db.getUserShares(user.getId(), ipo);
 
         if (userShares == null){
             throw new IllegalArgumentException("400: User does not have any shares for this ipo");
         } 
 
         // Account logic
-        AccountServices accountService = new AccountServices();
 
-        Account account = accountService.getAccountByUser(requestUserId, db);
-        account.deposit(ipoPricePerShare.multiply(new BigDecimal(requestedAmount)));
+        Account account = user.getAccount();
+
+        boolean success = account.deposit(ipoPricePerShare.multiply(new BigDecimal(requestedAmount)));
+        if (!success){
+            throw new IllegalArgumentException("500: Account failed when selling");
+        }
         
+        db.addOrUpdateObject(DataTypes.USER, user.getId(), user);
         db.addOrUpdateObject(DataTypes.ACCOUNT, account.getId(), account);
         
 
         // Removing shares
         userShares.removeShares(requestedAmount);
-        db.updateShare(requestUserId, ipo.getId(), userShares);
+        db.updateShare(user.getId(), ipo.getId(), userShares);
         return true;
         
     }
